@@ -59,24 +59,24 @@
 		
 		//Bind "socket"/"handle" to network address
 		int bind_successful = bind(p2pserver_network_socketlisten, (struct sockaddr *)&p2pserver_network_addresslisten, sizeof(p2pserver_network_addresslisten));
-		if(bind_successful == 0){
-			//Success!
-			g_message("Successfuly opened the hardware network stream\n");
-		}else if(bind_successful == -1){
+		if(bind_successful < 0){
 			//Failure to bind to socket
-			g_message("Failed to bind socket-handle to address\n");
+			debug_console_message("Failed to bind socket-handle to address\n");
+		}else if(bind_successful == 0){
+			//Success!
+			debug_console_message("Successfuly opened the hardware network stream\n");
 		}
 
 		//Start listening to the network stream
 		int listen_successful = listen(p2pserver_network_socketlisten, p2pserver_network_total_stream_connections);
-		
+		g_message("%d", bind_successful);
 		if(listen_successful == 0){
 			//Succesfully listening on the socket stream
-			g_message("Successfuly listening on the stream and ready to relay data!\n");
+			debug_console_message("Successfuly listening on the stream and ready to relay data!\n");
 			
-		}else if(listen_successful == 1){
+		}else if(listen_successful < 0){
 			//Fail to listen on the socket stream
-			g_message("Failed to listen on the socket stream\n");
+			debug_console_message("Failed to listen on the socket stream\n");
 		}
 
 
@@ -87,16 +87,11 @@
 		//Set Libev event
 		event_set(&p2pserver_network_accept_event, p2pserver_network_socketlisten, EV_READ|EV_PERSIST, p2pserver_network_accept_callback, NULL);
 		
-	
 		
-		/*
-		  event_add(&accept_event,
-            NULL);
-
-  event_dispatch();
-
-  close(socketlisten);
-*/
+		//Activate event
+		event_add(&p2pserver_network_accept_event, NULL);
+	
+		event_dispatch();
 
 	 }
 	 
@@ -163,6 +158,15 @@ void p2pserver_network_buf_read_callback(struct bufferevent *incoming, void *arg
 	if (req == NULL){
 		return;    
 	}
+	
+	gchar * network_response;
+	network_response = p2pserver_network_parse_incomming_command("{\"cmd\":\"identupdate\"}");
+	g_message(network_response);
+	evreturn = evbuffer_new();
+	evbuffer_add_printf(evreturn,"THIS IS A DUMMY RESPONSE -- IDENTITY UPDATE COMPLETE");
+	bufferevent_write_buffer(incoming,evreturn);
+	evbuffer_free(evreturn);
+	free(req);
 }
 
 

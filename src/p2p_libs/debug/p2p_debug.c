@@ -21,18 +21,15 @@
 		THE SOFTWARE.
 ** ** **/
 
-
-/** **
-	Load Headers
-** **/
-#include "./p2p_libs/debug/p2p_debug.h"
-#include "./p2p_libs/networking/p2p_net.h"
-#include "./p2p_libs/jsonrpc/p2p_json_interface.h"
-
-
-/** **
-	Load Instructions
-** **/
-#include "./p2p_libs/debug/p2p_debug.c"
-#include "./p2p_libs/networking/p2p_net.c"
-#include "./p2p_libs/jsonrpc/p2p_json_interface.c"
+void debug_console_message(gchar * incomming_message){
+	/**
+	 * Debug Level codes
+	 * 0 = Complete off, No messages report to console
+	 * 1 = ALL messages are reported to the console
+	 **/
+	 
+	 if(debug_level == 1){
+		 g_message(incomming_message);
+	 }
+	
+}

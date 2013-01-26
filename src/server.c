@@ -19,9 +19,9 @@
 		LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 		OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 		THE SOFTWARE.
-** ** **/
+** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **
 
-/** ** **
+
 								P2P Crypt (Server)
 
 		Short Description:
@@ -29,8 +29,8 @@
 			and even gamers for audio,video,text or file transfer encrypted communications 
 			that is a "Turn-Key" solution for the global masses. 
 	 
-			The servers' purpose of the network is to stay consistently online, to relay & store messages, 
-			real-time streams and protect the integrity of everyone’s public-key.
+			The servers' purpose of the network is to stay consistently online, to store messages, 
+			relay real-time streams and protect the integrity of everyone’s public-key.
 		
 		
 		Resources
@@ -54,7 +54,7 @@ int main(int argc, char *argv[]){
 	//Initialize GLib
 	g_type_init();
 
-	g_message("STARTING");
+	debug_console_message("Booting up!");
 	
 	
 	//Start P2P Server Networking functions
@@ -62,8 +62,13 @@ int main(int argc, char *argv[]){
 		g_message("Thread create failed: %s!!", p2pserver_network_thread_error->message);
 		g_error_free(p2pserver_network_thread_error);
 	}
-	
-	g_message("networking thread started");
 
+
+	//End all threads before closing the application
+	g_thread_join(p2pserver_network_thread);
+	
+	debug_console_message("Closing socket");
+	close(p2pserver_network_socketlisten);
+	
 	return 0;
 }
