@@ -19,7 +19,7 @@ Representative: http://p2pcrypt.com
 
 Contributors  
 [CIYAM.org/Open](http://ciyam.org/open/ "Donator")
-  
+[BitVPS.com](http://bitvps.com "Web Hosting")  
 
 ## Short Description of the source code features.
 The P2P Crypt network it self is designed to facilitate home owners, businesses, and even gamers for audio,video,text or file transfer encrypted communications that is a "Turn-Key" solution for the global masses.

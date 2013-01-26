@@ -25,6 +25,7 @@
 
 char parse_json_command(char *json_command){
 	
+	//Print out the recieved message....
 	g_message("%s", json_command);
 	return "";
 }
