@@ -23,7 +23,9 @@
 
 
 
-gchar * p2pserver_network_parse_incomming_command(gchar cmd){
+char parse_json_command(char *json_command){
 	
-	return "YEO";
+	g_message("%s", json_command);
+	return "";
 }
+

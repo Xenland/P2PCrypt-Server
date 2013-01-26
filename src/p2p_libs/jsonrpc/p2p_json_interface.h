@@ -36,4 +36,5 @@
  /**
  * Define Functions
  **/
-gchar * p2pserver_network_parse_incomming_command(gchar cmd);
+
+char parse_json_command(char *json_command);

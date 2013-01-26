@@ -159,11 +159,10 @@ void p2pserver_network_buf_read_callback(struct bufferevent *incoming, void *arg
 		return;    
 	}
 	
-	gchar * network_response;
-	network_response = p2pserver_network_parse_incomming_command("{\"cmd\":\"identupdate\"}");
-	g_message(network_response);
+	parse_json_command(req);
+	
 	evreturn = evbuffer_new();
-	evbuffer_add_printf(evreturn,"THIS IS A DUMMY RESPONSE -- IDENTITY UPDATE COMPLETE");
+	evbuffer_add_printf(evreturn, req);
 	bufferevent_write_buffer(incoming,evreturn);
 	evbuffer_free(evreturn);
 	free(req);
