@@ -4,12 +4,12 @@ Also known as **Peer 2 Peer Encryption Communications** server or for short **P2
 
 Founder: **The global collective of accumulated wisdom** and **Shane B.**  
 
-Main Developer: Shane B.  
+Main Developer: __Shane B.__  
 
 Representative: http://p2pcrypt.com  
 
 Contributors  
-[CYIAM.org/Open](http://cyiam.org/ "Donator")
+[CIYAM.org/Open](http://ciyam.org/open/ "Donator")
   
 
 ## Short Description of the source code features.
