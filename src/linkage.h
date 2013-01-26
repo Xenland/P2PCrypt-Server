@@ -25,11 +25,10 @@
 /** **
 	Load Headers
 ** **/
-#include "./p2p_libs/networking/p2pnet.h"
-
+#include "./p2p_libs/networking/p2p_net.h"
 
 
 /** **
 	Load Instructions
 ** **/
-#include "./p2p_libs/networking/p2pnet.c"
+#include "./p2p_libs/networking/p2p_net.c"

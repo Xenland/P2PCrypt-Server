@@ -22,11 +22,21 @@
 ** ** **/
 
 /** ** **
-			Peer-2-Peer Encryption Communications (P2P Crypt)
+								P2P Crypt (Server)
+
+		Short Description:
+			The P2P Crypt network it self is designed to facilitate home owners, businesses, 
+			and even gamers for audio,video,text or file transfer encrypted communications 
+			that is a "Turn-Key" solution for the global masses. 
+	 
+			The servers' purpose of the network is to stay consistently online, to relay & store messages, 
+			real-time streams and protect the integrity of everyone’s public-key.
+		
+		
+		Resources
+			You can contact and find other community members and contributors at http://p2pcrypt.com
 			
-	Abstract: Aims to provide a turnkey/plug-n-play communications for those whom demand
-their privacy back when it comes to any media relating to communications. This includes
-File transfers, Documents, Text, Voice, and Video streams.
+			Note: This source-code was written from the application called "Geany" for those who care.
 
 ** ** **/
 
@@ -35,6 +45,25 @@ File transfers, Documents, Text, Voice, and Video streams.
 
 int main(int argc, char *argv[]){
 	
+/**
+ * 		Begin P2P Server Logic
+ **/	
+	//Initialize gtk
+	gtk_init(NULL, NULL);
 	
+	//Initialize GLib
+	g_type_init();
+
+	g_message("STARTING");
+	
+	
+	//Start P2P Server Networking functions
+	if((p2pserver_network_thread = g_thread_create((GThreadFunc)start_p2p_node, (void *)"", TRUE, &p2pserver_network_thread_error)) == NULL){
+		g_message("Thread create failed: %s!!", p2pserver_network_thread_error->message);
+		g_error_free(p2pserver_network_thread_error);
+	}
+	
+	g_message("networking thread started");
+
 	return 0;
 }
