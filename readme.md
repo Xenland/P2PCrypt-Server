@@ -9,7 +9,7 @@ Main Developer: Shane B.
 Representative: http://p2pcrypt.com  
 
 Contributors  
-(http://CYIAM.org/open)[CYIAM.org/open]
+[CYIAM.org/Open](http://cyiam.org/ "Donator")
   
 
 ## Short Description of the source code features.
