@@ -23,11 +23,13 @@
 
 
 
-void parse_json_command(char json_command, char *response){
+/** 
+ * 	Main Json Rpc Command Parser
+ **/
+char * parse_json_command(char json_command){
 	
-	//Define Local Variables
-	g_print("PARSING");
-	
+	//Define Local Variables	
+	char *response;
 	response = "YOU KNOW";
 	
 	//Print out the recieved message....
@@ -41,8 +43,9 @@ void parse_json_command(char json_command, char *response){
 	 **/
 	
 	//Parse JSON incomming
-	/*json_object * jobj = json_tokener_parse(json_command);
+	//json_object * jobj = json_tokener_parse(json_command);
 	
+	/*
 	enum json_type type;
 	json_object_object_foreach(jobj, key, val){
 		g_print("%s\n", key);
@@ -65,6 +68,6 @@ void parse_json_command(char json_command, char *response){
 		}
 	}
 	*/
-	return;
+	return response;
 }
 
