@@ -26,14 +26,14 @@
 /** 
  * 	Main Json Rpc Command Parser
  **/
-char * parse_json_command(char json_command){
+const char * parse_json_command(char *json_command){
 	
 	//Define Local Variables	
 	char *response;
-	response = "YOU KNOW";
+	//response = "YOU KNOW";
 	
 	//Print out the recieved message....
-	//g_message("%s", json_command);
+	//g_print("%s", json_command);
 	
 	
 	/** 
@@ -43,13 +43,24 @@ char * parse_json_command(char json_command){
 	 **/
 	
 	//Parse JSON incomming
-	//json_object * jobj = json_tokener_parse(json_command);
+	json_object * jobj = json_tokener_parse(json_command);
 	
-	/*
+	
 	enum json_type type;
 	json_object_object_foreach(jobj, key, val){
-		g_print("%s\n", key);
-
+		//print key g_print("%s\n", key);
+		
+		//What is this key?
+		int is_key_cmd = g_utf8_collate(key, "cmd");
+		
+		if(is_key_cmd == 0){
+			response = "Cmd was called";
+		}else{
+			response = "No valid command was called";
+		}
+		
+		
+		/*
 		if(g_utf8_collate(key, "cmd") >= 0){
 			//Looks like the user has sent a "cmd" (command), lets analyze the "val" (value) of that command to see what the caller/client needs to be attending to...
 
@@ -62,12 +73,13 @@ char * parse_json_command(char json_command){
 				if(g_utf8_collate(cmd_value, "identupdate") == 0){
 					//Call "Identity Update Response"
 						//char return_response = p2pserver_json_identupdate_response(json_command);
+						response = "HELLO AGAIN!";
 						
 				}
 			}
-		}
+		}*/
 	}
-	*/
+	
 	return response;
 }
 

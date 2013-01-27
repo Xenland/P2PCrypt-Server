@@ -37,4 +37,4 @@
  * Define Functions
  **/
 
-char * parse_json_command(char json_command);
+const char * parse_json_command(char *json_command);
