@@ -159,13 +159,19 @@ void p2pserver_network_buf_read_callback(struct bufferevent *incoming, void *arg
 		return;    
 	}
 	
-	parse_json_command(req);
 	
+	char *response;
+	parse_json_command(req, response);
+	//response = "OMP OMP";
+	g_print("PARSED");
 	evreturn = evbuffer_new();
-	evbuffer_add_printf(evreturn, req);
+	evbuffer_add_printf(evreturn, "%s", response);
+	
 	bufferevent_write_buffer(incoming,evreturn);
 	evbuffer_free(evreturn);
 	free(req);
+	
+	g_print("%s", response);
 }
 
 

@@ -18,7 +18,7 @@ Main Developer: __Shane B.__
 Representative: http://p2pcrypt.com  
 
 Contributors  
-[CIYAM.org/Open](http://ciyam.org/open/ "Donator")
+[CIYAM.org/Open](http://ciyam.org/open/ "Donator")  
 [BitVPS.com](http://bitvps.com "Web Hosting")  
 
 ## Short Description of the source code features.
