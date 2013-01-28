@@ -56,17 +56,18 @@ void parse_json_command(char** response, char *json_command){
 				//Check what command has been called.
 				client_command_called = json_object_get(json, "cmd");
 				
+				char * cmd_message = g_strdup_printf("%s", json_string_value(client_command_called));
 					//Make sure this is a valid string
-					g_print("CMD STRING:%s", json_string_value(client_command_called));
+					g_print("CMD STRING:%s", cmd_message);
 					
-					/*if(json_equal(tmp_root_key_name, "identupdate") == 0){
+					if(json_equal(cmd_message, json_string("identupdate")) == 1){
 						//We can't seem to find a "cmd", return command not recognized
 						local_response = g_strdup_printf("%s", "{\"response\":\"Command Not Recognized\", \"return_code\":100\"}");
 						
 					}else{
 						//We have found a "cmd" key invoked, Depending on the "value" we will parse the rest of the json accordingly
 						local_response = g_strdup_printf("%s", "{\"response\":\"Command SUCCESS!\", \"return_code\":1\"}");
-					}*/
+					}
 				
 		}else if(json_valid == 0){
 			//Json is INVALID, response with the approriate response
