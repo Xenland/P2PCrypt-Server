@@ -68,7 +68,7 @@
 		}
 
 		//Start listening to the network stream
-		int listen_successful = listen(p2pserver_network_socketlisten, p2pserver_network_total_stream_connections);
+		int listen_successful = listen(p2pserver_network_socketlisten, p2pserver_network_total_active_connections);
 		g_message("%d", bind_successful);
 		if(listen_successful == 0){
 			//Succesfully listening on the socket stream

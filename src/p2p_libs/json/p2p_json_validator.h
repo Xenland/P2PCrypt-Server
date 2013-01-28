@@ -30,7 +30,3 @@
 
 //Define JSON validator variables
 
-
-
-//Define functions
-int p2pserver_json_is_valid(char *json_to_validate);

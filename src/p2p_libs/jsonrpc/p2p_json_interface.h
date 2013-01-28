@@ -24,7 +24,9 @@
 /**
  * 	Load libraries
  **/
-	
+#include <sqlite3.h>
+
+#include <jansson.h>
 	
 /**
  * Define Global Variables

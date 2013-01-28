@@ -28,65 +28,61 @@
  **/
 void parse_json_command(char** response, char *json_command){
 	
-	//Define Local Variables	
-	int json_is_valid;
-	char * local_response = g_strdup_printf("%s", "hello world");
+	//Define Local Variables
+	char * local_response;
 	
+	int json_valid = 0; //0 = Invalid; 1 = Valid json;
+	json_t *json;
+	json_error_t error;
+	json_t *client_command_called;
+
+
 	//Begin local logic
-	*response = local_response;
-	
-	/** 
-	 * TODO: check if the JSON is valid before parsing 
-	 * 			to prevent "Segmentation Defaults" 
-	 * 			and its good sanity checks.
-	 **/
-	 
-	//Check if JSON is valid before parsing...
-	/*json_is_valid = p2pserver_json_is_valid(json_command);
-	g_print("beforesprintf");
-	g_sprintf(response, "%d", json_is_valid);
-	g_print("aftersprintf");*/
-	
-	/*//Parse JSON incomming
-	json_object * jobj = json_tokener_parse(json_command);
-	
-	
-	enum json_type type;
-	
-	int first_read = 0;
-	json_object_object_foreach(jobj, key, val){
 		
-		if(first_read == 0){
-			
-			//What key is this we are readying?
-			int is_key_cmd = g_utf8_collate(key, "cmd");
-			
-			if(is_key_cmd == 0){
-				//Flag "First read" (We only want to read the first keys value)
-				first_read = 1;
-				
-				//Execute the calling ocmmand if there is any valid ones found...
-				type = json_object_get_type(val);
-				if(type == json_type_string){
-					char* cmd_value;
-					cmd_value = json_object_get_string(val);
-					
-					if(g_utf8_collate(cmd_value, "identupdate") == 0){
-						//Call "Identity Update Response"
-							//response = p2pserver_json_identupdate_response(json_command);
-							response = "HELLO AGAIN!";
-					}
-				}
-			}
+		//Load up incomming JSON text into the JSON memory
+		json = json_loads(json_command, 0, &error);
+		
+		//Is json valid? (Yes, keep parsing, no, return negative response)
+		if(!json){
+			//Json is not valid
+			json_valid = 0;
+		}else{
+			//JSON IS VALID
+			json_valid = 1;
 		}
-	}
-	
+		
+		if(json_valid == 1){
+			//Json is valid, continue with the parsing...
+				//Check what command has been called.
+				client_command_called = json_object_get(json, "cmd");
+				
+					//Make sure this is a valid string
+					g_print("CMD STRING:%s", json_string_value(client_command_called));
+					
+					/*if(json_equal(tmp_root_key_name, "identupdate") == 0){
+						//We can't seem to find a "cmd", return command not recognized
+						local_response = g_strdup_printf("%s", "{\"response\":\"Command Not Recognized\", \"return_code\":100\"}");
+						
+					}else{
+						//We have found a "cmd" key invoked, Depending on the "value" we will parse the rest of the json accordingly
+						local_response = g_strdup_printf("%s", "{\"response\":\"Command SUCCESS!\", \"return_code\":1\"}");
+					}*/
+				
+		}else if(json_valid == 0){
+			//Json is INVALID, response with the approriate response
+			local_response = g_strdup_printf("%s", "{\"response\":\"Invalid json\", \"return_code\":101\"}");
+		}
+		
+		
 	//If response is not set, then it is presummed no valid command was invoked...
-	if(strlen(response) <= 0){
-		response = "No valid command was called";
+	/*if(sizeof(local_response) <= 0){
+		local_response = g_strdup_printf("%s", "{\"response\":\"Command Not Recognized\", \"return_code\":100\"}");
 	}*/
 	
-	//response = "YOU KNOW WHO";
+	
+	//Define output response
+	*response = local_response;
+	
 	return;
 }
 
