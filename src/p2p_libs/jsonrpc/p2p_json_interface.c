@@ -26,13 +26,14 @@
 /** 
  * 	Main Json Rpc Command Parser
  **/
-const char * parse_json_command(char *json_command){
+void parse_json_command(char** response, char *json_command){
 	
 	//Define Local Variables	
-	char *response;
-	int json_is_valid = 0;
+	int json_is_valid;
+	char * local_response = g_strdup_printf("%s", "hello world");
 	
 	//Begin local logic
+	*response = local_response;
 	
 	/** 
 	 * TODO: check if the JSON is valid before parsing 
@@ -41,9 +42,10 @@ const char * parse_json_command(char *json_command){
 	 **/
 	 
 	//Check if JSON is valid before parsing...
-	json_is_valid = p2pserver_json_is_valid(json_command);
-	g_print("%d", json_is_valid);
-	//response = json_is_valid;
+	/*json_is_valid = p2pserver_json_is_valid(json_command);
+	g_print("beforesprintf");
+	g_sprintf(response, "%d", json_is_valid);
+	g_print("aftersprintf");*/
 	
 	/*//Parse JSON incomming
 	json_object * jobj = json_tokener_parse(json_command);
@@ -79,22 +81,12 @@ const char * parse_json_command(char *json_command){
 		}
 	}
 	
-	
-	
 	//If response is not set, then it is presummed no valid command was invoked...
 	if(strlen(response) <= 0){
 		response = "No valid command was called";
 	}*/
 	
-	response = "YOU KNOW";
-	return response;
-}
-
-
-
-char * p2pserver_json_identupdate_response(char *json_command){
-	
-	
-	return json_command;
+	//response = "YOU KNOW WHO";
+	return;
 }
 

@@ -35,4 +35,4 @@
  * Define Functions
  **/
 
-const char * parse_json_command(char *json_command);
+void parse_json_command(char** response, char *json_command);

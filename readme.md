@@ -27,7 +27,7 @@ _Shane B._
 ###Contributing Libraries
 [Gnome](http://gnome.org)  
 [Open SSL] (http://openssl.org)  
-[JSON Lint](http://jsonlint.com/)  
+[Jansson](http://www.digip.org/jansson/)  
 [LIBEVENT](http://libevent.org)
 
 

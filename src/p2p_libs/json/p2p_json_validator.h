@@ -22,6 +22,9 @@
 ** ** **/
 
 //Define libraries
+#include <gtk/gtk.h>
+#include <glib.h>
+
 #include <jansson.h>
 
 

@@ -27,7 +27,7 @@
 int p2pserver_json_is_valid(char *json_to_validate){
 	
 	//Define local function variables
-	int json_valid = -1; //0 = Invalid; 1 = Valid json;
+	int json_valid = 0; //0 = Invalid; 1 = Valid json;
 	json_t *json;
     json_error_t error;
 
