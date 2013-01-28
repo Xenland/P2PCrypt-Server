@@ -11,15 +11,26 @@ _to specifically refer to the server but we just like to call it the_
 **P2P Crypt** 
 _when speaking in general about the network._  
 
-Founder: **The global collective of accumulated wisdom** and **Shane B.**  
+###Founder
+*The global collective of accumulated wisdom*    
 
-Main Developer: __Shane B.__  
+###Application Developers & Resources 
+_Shane B._  
 
-Representative: http://p2pcrypt.com  
+###Representative
+[P2PCrypt.com](http://p2pcrypt.com)  
 
-Contributors  
+###Contributing Resources  
 [CIYAM.org/Open](http://ciyam.org/open/ "Donator")  
 [BitVPS.com](http://bitvps.com "Web Hosting")  
+
+###Contributing Libraries
+[Gnome](http://gnome.org)  
+[Open SSL] (http://openssl.org)  
+[JSON Lint](http://jsonlint.com/)  
+[LIBEVENT](http://libevent.org)
+
+
 
 ## Short Description of the source code features.
 The P2P Crypt network it self is designed to facilitate home owners, businesses, and even gamers for audio,video,text or file transfer encrypted communications that is a "Turn-Key" solution for the global masses.

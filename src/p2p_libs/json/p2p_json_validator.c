@@ -21,18 +21,30 @@
 		THE SOFTWARE.
 ** ** **/
 
-/**
- * 	Load libraries
- **/
-	
-	
-/**
- * Define Global Variables
- **/
- 
- 
- /**
- * Define Functions
- **/
+//Define functions
 
-const char * parse_json_command(char *json_command);
+
+int p2pserver_json_is_valid(char *json_to_validate){
+	
+	//Define local function variables
+	int json_valid = -1; //0 = Invalid; 1 = Valid json;
+	json_t *json;
+    json_error_t error;
+
+
+	//Begin local function logic
+		
+		//Check if json is valid...
+		json = json_loads(json_to_validate, 0, &error);
+		
+		if(!json){
+			//Json is not valid
+			json_valid = 0;
+		}else{
+			//JSON IS VALID
+			json_valid = 1;
+		}
+
+
+	return json_valid;
+}

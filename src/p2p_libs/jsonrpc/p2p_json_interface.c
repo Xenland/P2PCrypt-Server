@@ -30,56 +30,71 @@ const char * parse_json_command(char *json_command){
 	
 	//Define Local Variables	
 	char *response;
-	//response = "YOU KNOW";
+	int json_is_valid = 0;
 	
-	//Print out the recieved message....
-	//g_print("%s", json_command);
-	
+	//Begin local logic
 	
 	/** 
 	 * TODO: check if the JSON is valid before parsing 
 	 * 			to prevent "Segmentation Defaults" 
 	 * 			and its good sanity checks.
 	 **/
+	 
+	//Check if JSON is valid before parsing...
+	json_is_valid = p2pserver_json_is_valid(json_command);
+	g_print("%d", json_is_valid);
+	//response = json_is_valid;
 	
-	//Parse JSON incomming
+	/*//Parse JSON incomming
 	json_object * jobj = json_tokener_parse(json_command);
 	
 	
 	enum json_type type;
+	
+	int first_read = 0;
 	json_object_object_foreach(jobj, key, val){
-		//print key g_print("%s\n", key);
 		
-		//What is this key?
-		int is_key_cmd = g_utf8_collate(key, "cmd");
-		
-		if(is_key_cmd == 0){
-			response = "Cmd was called";
-		}else{
-			response = "No valid command was called";
-		}
-		
-		
-		/*
-		if(g_utf8_collate(key, "cmd") >= 0){
-			//Looks like the user has sent a "cmd" (command), lets analyze the "val" (value) of that command to see what the caller/client needs to be attending to...
-
-			//Is the client requesting an "Identity Update" (Pings server: if this is the first time ping, the server and client will exachange keys if the relationship exists the server just accepts the encrypted "ping" packet update)
-			type = json_object_get_type(val);
-			if(type == json_type_string){
-				char* cmd_value;
-				cmd_value = json_object_get_string(val);
-				//g_print("VALUE:%d\n", g_utf8_collate(cmd_value, "identupdate"));
-				if(g_utf8_collate(cmd_value, "identupdate") == 0){
-					//Call "Identity Update Response"
-						//char return_response = p2pserver_json_identupdate_response(json_command);
-						response = "HELLO AGAIN!";
-						
+		if(first_read == 0){
+			
+			//What key is this we are readying?
+			int is_key_cmd = g_utf8_collate(key, "cmd");
+			
+			if(is_key_cmd == 0){
+				//Flag "First read" (We only want to read the first keys value)
+				first_read = 1;
+				
+				//Execute the calling ocmmand if there is any valid ones found...
+				type = json_object_get_type(val);
+				if(type == json_type_string){
+					char* cmd_value;
+					cmd_value = json_object_get_string(val);
+					
+					if(g_utf8_collate(cmd_value, "identupdate") == 0){
+						//Call "Identity Update Response"
+							//response = p2pserver_json_identupdate_response(json_command);
+							response = "HELLO AGAIN!";
+					}
 				}
 			}
-		}*/
+		}
 	}
 	
+	
+	
+	//If response is not set, then it is presummed no valid command was invoked...
+	if(strlen(response) <= 0){
+		response = "No valid command was called";
+	}*/
+	
+	response = "YOU KNOW";
 	return response;
+}
+
+
+
+char * p2pserver_json_identupdate_response(char *json_command){
+	
+	
+	return json_command;
 }
 

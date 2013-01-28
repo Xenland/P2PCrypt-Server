@@ -53,7 +53,10 @@ int main(int argc, char *argv[]){
 	
 	//Initialize GLib
 	g_type_init();
-
+	
+	
+	//debug msg
+	debug_console_message("Initailized");
 	debug_console_message("Booting up!");
 	
 	

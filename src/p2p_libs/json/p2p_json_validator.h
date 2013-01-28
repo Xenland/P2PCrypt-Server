@@ -21,18 +21,13 @@
 		THE SOFTWARE.
 ** ** **/
 
-/**
- * 	Load libraries
- **/
-	
-	
-/**
- * Define Global Variables
- **/
- 
- 
- /**
- * Define Functions
- **/
+//Define libraries
+#include <jansson.h>
 
-const char * parse_json_command(char *json_command);
+
+//Define JSON validator variables
+
+
+
+//Define functions
+int p2pserver_json_is_valid(char *json_to_validate);
