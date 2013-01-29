@@ -28,7 +28,7 @@
 #include "./p2p_libs/debug/p2p_debug.h"
 #include "./p2p_libs/networking/p2p_net.h"
 #include "./p2p_libs/jsonrpc/p2p_json_interface.h"
-#include "./p2p_libs/json/p2p_json_validator.h"
+#include "./p2p_libs/sqlite3/p2p_sql.h"
 
 
 /** **
@@ -37,4 +37,4 @@
 #include "./p2p_libs/debug/p2p_debug.c"
 #include "./p2p_libs/networking/p2p_net.c"
 #include "./p2p_libs/jsonrpc/p2p_json_interface.c"
-#include "./p2p_libs/json/p2p_json_validator.c"
+#include "./p2p_libs/sqlite3/p2p_sql.c"

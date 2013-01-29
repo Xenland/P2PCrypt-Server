@@ -1,4 +1,4 @@
-/** ** **
+ /** ** **
 				Copyright (c) 2013 "Shane B. and Contributors"
 				Representative: www.P2PCrypt.com
 
@@ -21,12 +21,14 @@
 		THE SOFTWARE.
 ** ** **/
 
-//Define libraries
-#include <gtk/gtk.h>
-#include <glib.h>
+/**
+ * Load Libraries
+ **/
+ 
+#include <sqlite3.h>
 
-#include <jansson.h>
 
-
-//Define JSON validator variables
-
+/**
+ * Define Functions
+ **/
+ int p2pserver_sql_pubkey_exists(gchar *client_public_key_sha256, const guchar * client_public_key);

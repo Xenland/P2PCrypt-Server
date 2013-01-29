@@ -115,7 +115,8 @@ void parse_json_command(char** response, char *json_command){
 		 
 		 //Begin local function logic
 		 
-			/**
+			/** General Instruction Description
+			 * 
 			 * Parse "json", check if this clients publickey is in the database
 			 * if no: Add it to the database and send back our public key
 			 * if yes: Update the users current "status"
@@ -130,11 +131,26 @@ void parse_json_command(char** response, char *json_command){
 			//SHA256: public_key 
 			gchar * client_public_key_string_sha256;
 			client_public_key_string_sha256 = g_compute_checksum_for_data(G_CHECKSUM_SHA256, client_public_key_string, sizeof(client_public_key_string));
+			g_print("SHA256:%s\n", client_public_key_string_sha256);
 			
-			//Search for the "sha256s' associated public key in the SQLite3 DB then match that found result with its public key (efficent search, less characters to match)
-			 g_print("%s\n", client_public_key_string_sha256);
+			//SQLite3: Search for the "sha256s" associated public key in the SQLite3 DB and match that found result with its public key (efficent search, less characters to match)
+			int client_public_key_exists = p2pserver_sql_pubkey_exists(client_public_key_string_sha256, client_public_key_string);
+			
+			//Decision: If no: add it to the DB, if yes, update the current users "status" (Only if the status is signed and valid, of course)
 			 
-		 local_response = g_strdup_printf("%s", "{\"return_code\":1\", \"public_key\":\"node_something_key\"}");
+			if(client_public_key_exists == 1){
+				//This is a returning client
+				local_response = g_strdup_printf("%s", "{\"return_code\":1\", \"public_key\":\"node_something_key RETURNING CLIENT\"}");
+			}else if(client_public_key_exists == 0){
+				//This client is new
+				local_response = g_strdup_printf("%s", "{\"return_code\":1\", \"public_key\":\"node_something_key NEW CLIENT\"}");
+			}else{
+				//Error status invoked during the search
+				local_response = g_strdup_printf("%s", "{\"return_code\":-1000\"}");
+			}
+			 
+		//Static dummy response for now....
+		 //local_response = g_strdup_printf("%s", "{\"return_code\":1\", \"public_key\":\"node_something_key\"}");
 		 
 		 //output with response
 		 *response = local_response;
