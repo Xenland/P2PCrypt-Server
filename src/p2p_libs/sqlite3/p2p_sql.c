@@ -39,7 +39,46 @@ int p2pserver_sql_pubkey_exists(gchar *client_public_key_sha256, const guchar * 
 	//Define local variables
 		int return_code = 0;
 	
+		//SQLite3
+		sqlite3 *db;
+		sqlite3_stmt *stmt;
+		int rc;
+		char *errmsg = 0;
+		
+		rc = sqlite3_open("/home/c_dev/p2pcrypt_server/v0.1.0/src/db/client_list", &db);
+	
+		//Was the DB file successfully opened?
+		if(rc){
+			//Failed to open DB
+			return_code = -1;
+			
+		}else{
+			g_print("\nDB opened\n");
+			const char * pubkey_exists_sql;
+				
+			pubkey_exists_sql = g_strdup_printf("SELECT `id`, `publickey_sha256`, `publickey` FROM `clients` WHERE `id` = '1' LIMIT 0,1;");
+			
+			g_print("\nABOUT TO EXECUTE SQL\n");
+			rc = sqlite3_prepare_v2(db, pubkey_exists_sql, -1, &stmt, 0);
+			
+			g_print("\nEXECUTING\n");
+			sqlite3_step(stmt);
+			printf("%s|", sqlite3_column_text(stmt, 1));
+			printf("%s|", sqlite3_column_text(stmt, 2));
+			
+			sqlite3_finalize(stmt);
+			
+			sqlite3_close(db);
+			 
+			return_code = 1;
+		}
+	
+	
+		return return_code;
+	
+	/* 
 		//SQLite3 Stuff
+		sqlite3_stmt *stmt;
 		sqlite3 *db;
 		int rc;
 		gchar *errmsg = 0;
@@ -52,8 +91,42 @@ int p2pserver_sql_pubkey_exists(gchar *client_public_key_sha256, const guchar * 
 		//Was the DB file successfully opened?
 		if(rc == SQLITE_OK){
 			//Yes it has been successfully opened!
-			
-			return_code = 1;
+				//Do search for sha256/publickey match in DB
+				const char * pubkey_exists_sql;
+				
+				pubkey_exists_sql = g_strdup_printf("SELECT `id`, `publickey_sha256`, `publickey` FROM `clients` WHERE `publickey_sha256` = '%s' LIMIT 0,1;", client_public_key_sha256);
+				g_print("ABOUT TO EXECUTE SQL");
+				rc = sqlite3_prepare_v2(db, pubkey_exists_sql, -1, &stmt, 0);
+				if(rc == SQLITE_OK){
+					g_print("SQL QUERY OKAY!");
+					int nCols = sqlite3_column_count(stmt);
+					g_print("SQL COLUMNS:%d", nCols);
+					if(nCols > 0){
+						while((rc = sqlite3_step(stmt)) == SQLITE_ROW){
+							for(int nCol = 0; nCol < nCols; nCol++){
+								if(nCol == 1){
+									//Return public key as unsigned char
+									unsigned char * serverside_client_public_key;
+									serverside_client_public_key = (unsigned char *)sqlite3_column_text(stmt, nCol);
+									g_print("ABOUT TO PRINT PUB KEY");
+									g_print("%s", serverside_client_public_key);
+								}
+							}
+						}
+					}else{
+						//NO RESULTS WERE RETURNED FROM THE DATABASE...
+							//TO DO: something.
+							
+							g_print("NO RESULSTS");
+							
+					}
+					sqlite3_finalize(stmt);
+				}
+				
+				sqlite3_close(db);
+				
+					
+				return_code = 1;
 		}else{
 			//No it wasn't sucessfully opened
 			return_code = -1;
@@ -61,67 +134,5 @@ int p2pserver_sql_pubkey_exists(gchar *client_public_key_sha256, const guchar * 
 	
 	
 	return return_code;
-	
-	/*
-		//SQLite3
-		sqlite3 *conn;
-		sqlite3_stmt *res;
-		int error = 0;
-		int rec_count = 0;
-		const char *errMSG;
-		const char *tail;
-		
-	
-	//Begin function logic
-		//Attempt to open the SQLite3 database
-		error = sqlite3_open("./db/network_web.sl3", &conn);
-		
-		if(error){
-			//Failed to connect/open DB
-			return_code = -1;
-		}
-		
-		//Attempt to search for sha256, publickey match (only if sql is open)
-		if(return_code == 0){
-				//Do Search...
-				const char * pubkey_exists_sql;
-				
-				g_print("PUBKEY: %s\n", client_public_key);
-				pubkey_exists_sql = g_strdup_printf("SELECT `id`, `publickey_sha256`, `publickey` FROM `clients` WHERE `publickey_sha256` = '%s' LIMIT 0,1", client_public_key_sha256);
-				g_print("SQL query: %s\n", pubkey_exists_sql);
-				error = sqlite3_prepare_v2(
-											conn, 
-											pubkey_exists_sql, 
-											sizeof(pubkey_exists_sql),
-											&res,
-											&tail
-										);
-										
-				if(error != SQLITE_OK){
-					//Failed to search/query
-					return_code = -2;
-					
-				}
-				
-				if(error == SQLITE_OK){
-					while(sqlite3_step(res) == SQLITE_ROW){
-						//Assign output data to local variables to use
-						//int * client_db_id;
-						//client_db_id = g_strdup_printf("%u", sqlite3_column_int(res, 0));
-						
-						gchar * publickey_sha256;
-						publickey_sha256 = g_strdup_printf("%s", sqlite3_column_text(res, 1));
-						
-						g_print("DB SHA256:%s\n", publickey_sha256);
-					}
-					
-					//Return code
-					return_code = 1;
-				}
-				
-				g_print("SQLFUNC CODE:%d", return_code);
-		}
-	
-	return return_code;
-	*/
+*/
 }
