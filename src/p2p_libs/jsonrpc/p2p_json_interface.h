@@ -24,6 +24,8 @@
 /**
  * 	Load libraries
  **/
+#include <glib.h>
+ 
 #include <sqlite3.h>
 
 #include <jansson.h>
@@ -36,5 +38,10 @@
  /**
  * Define Functions
  **/
+ void parse_json_command(char** response, char *json_command);
 
-void parse_json_command(char** response, char *json_command);
+
+/**
+ * RPC Command Responses
+ **/
+ void p2pserver_json_identupdate_response(char **response, json_t *json);

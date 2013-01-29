@@ -31,6 +31,7 @@ void parse_json_command(char** response, char *json_command){
 	//Define Local Variables
 	char * local_response;
 	
+	int valid_cmd_found = 0;
 	int json_valid = 0; //0 = Invalid; 1 = Valid json;
 	json_t *json;
 	json_error_t error;
@@ -56,29 +57,34 @@ void parse_json_command(char** response, char *json_command){
 				//Check what command has been called.
 				client_command_called = json_object_get(json, "cmd");
 				
-				char * cmd_message = g_strdup_printf("%s", json_string_value(client_command_called));
-					//Make sure this is a valid string
-					g_print("CMD STRING:%s", cmd_message);
+				const char * cmd_message;
+				cmd_message = g_strdup_printf("%s", json_string_value(client_command_called));
+				
+				//Make sure the "cmd" key was called
+				const char * cmd_message_comparison;
+				cmd_message_comparison = g_strdup_printf("%s", json_string_value(json_string("identupdate")));
+				g_print("\n%s\n%s\n", cmd_message, cmd_message_comparison);
+				
+				int cmd_comparison_bool = g_utf8_collate(cmd_message, cmd_message_comparison);
+
+				if(cmd_comparison_bool == 0){
+					//We have found the "command" currently being invoked is "identityupdate" aka "identupdate"
+					p2pserver_json_identupdate_response(&local_response, json);
+
+					//Flag we found a valid command
+					valid_cmd_found = 1;
+				}
+				
+				if(valid_cmd_found == 0){
+					//We can't seem to find a "cmd", return command not recognized
+					local_response = g_strdup_printf("%s", "{\"response\":\"Command Not Recognized\", \"return_code\":100\"}");
 					
-					if(json_equal(cmd_message, json_string("identupdate")) == 1){
-						//We can't seem to find a "cmd", return command not recognized
-						local_response = g_strdup_printf("%s", "{\"response\":\"Command Not Recognized\", \"return_code\":100\"}");
-						
-					}else{
-						//We have found a "cmd" key invoked, Depending on the "value" we will parse the rest of the json accordingly
-						local_response = g_strdup_printf("%s", "{\"response\":\"Command SUCCESS!\", \"return_code\":1\"}");
-					}
+				}
 				
 		}else if(json_valid == 0){
 			//Json is INVALID, response with the approriate response
 			local_response = g_strdup_printf("%s", "{\"response\":\"Invalid json\", \"return_code\":101\"}");
 		}
-		
-		
-	//If response is not set, then it is presummed no valid command was invoked...
-	/*if(sizeof(local_response) <= 0){
-		local_response = g_strdup_printf("%s", "{\"response\":\"Command Not Recognized\", \"return_code\":100\"}");
-	}*/
 	
 	
 	//Define output response
@@ -87,3 +93,51 @@ void parse_json_command(char** response, char *json_command){
 	return;
 }
 
+
+
+
+/**
+ * 	RPC Command Responses
+ **/
+
+
+	/** ** **
+	 * Identity Update
+	 * Purpose: "Initailizing connections, or if connection is not-new than updating online status of the client"
+	 ** ** **/
+	 
+	 void p2pserver_json_identupdate_response(char **response, json_t *json){
+		 
+		 //Define local variables
+		 char * local_response;
+		 
+		 json_t *client_public_key;
+		 
+		 //Begin local function logic
+		 
+			/**
+			 * Parse "json", check if this clients publickey is in the database
+			 * if no: Add it to the database and send back our public key
+			 * if yes: Update the users current "status"
+			 **/
+			 
+			//JSON: Get the public_key value of the user.
+			client_public_key = json_object_get(json, "public_key");
+			 
+			const guchar * client_public_key_string;
+			client_public_key_string = g_strdup_printf("%s", json_string_value(client_public_key));
+			
+			//SHA256: public_key 
+			gchar * client_public_key_string_sha256;
+			client_public_key_string_sha256 = g_compute_checksum_for_data(G_CHECKSUM_SHA256, client_public_key_string, sizeof(client_public_key_string));
+			
+			//Search for the "sha256s' associated public key in the SQLite3 DB then match that found result with its public key (efficent search, less characters to match)
+			 g_print("%s\n", client_public_key_string_sha256);
+			 
+		 local_response = g_strdup_printf("%s", "{\"return_code\":1\", \"public_key\":\"node_something_key\"}");
+		 
+		 //output with response
+		 *response = local_response;
+		 
+		 return;
+	 }
