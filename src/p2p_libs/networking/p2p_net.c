@@ -70,6 +70,7 @@
 		//Start listening to the network stream
 		int listen_successful = listen(p2pserver_network_socketlisten, p2pserver_network_total_active_connections);
 		g_message("%d", bind_successful);
+		
 		if(listen_successful == 0){
 			//Succesfully listening on the socket stream
 			debug_console_message("Successfuly listening on the stream and ready to relay data!\n");

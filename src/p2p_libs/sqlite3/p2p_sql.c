@@ -23,7 +23,9 @@
 
 
 //Define functions
-int p2pserver_sql_pubkey_exists(gchar *client_public_key_sha256, const guchar * client_public_key){
+
+
+int p2pserver_sql_client_pubkey_exists(gchar *client_public_key_sha256, const guchar * client_public_key){
 	
 	/**
 	 * 	Response Codes
@@ -59,7 +61,8 @@ int p2pserver_sql_pubkey_exists(gchar *client_public_key_sha256, const guchar * 
 			const char * pubkey_exists_sql;
 				
 			pubkey_exists_sql = g_strdup_printf("SELECT `id` FROM `clients` WHERE `publickey_sha256` = '%s' LIMIT 0,1;", client_public_key_sha256);
-
+			g_print("SQL EXECUTING:%s", pubkey_exists_sql);
+			
 			rc = sqlite3_prepare_v2(db, pubkey_exists_sql, -1, &stmt, 0);
 			
 			if(rc){

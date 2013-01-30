@@ -1,4 +1,4 @@
-/** ** **
+ /** ** **
 				Copyright (c) 2013 "Shane B. and Contributors"
 				Representative: www.P2PCrypt.com
 
@@ -21,29 +21,17 @@
 		THE SOFTWARE.
 ** ** **/
 
-//Preload Global Headers
-#include <glib.h>
 
-//Preload Global Variables
-gchar *p2pserver_rsa_active_identity;
-
-/** **
-	Load Headers required for variable and function stuctures
-** **/
-#include "./p2p_libs/debug/p2p_debug.h"
-#include "./p2p_libs/networking/p2p_net.h"
-#include "./p2p_libs/jsonrpc/p2p_json_interface.h"
-#include "./p2p_libs/sqlite3/p2p_sql.h"
-
-#include "./p2p_libs/algo/rsa/p2p_rsa.h"
-
-
-/** **
-	Load Instructions required for variable and function stuctures
-** **/
-#include "./p2p_libs/debug/p2p_debug.c"
-#include "./p2p_libs/networking/p2p_net.c"
-#include "./p2p_libs/jsonrpc/p2p_json_interface.c"
-#include "./p2p_libs/sqlite3/p2p_sql.c"
-
-#include "./p2p_libs/algo/rsa/p2p_rsa.c"
+/**
+* Load Libraries
+**/
+#include <openssl/evp.h>
+#include <openssl/rsa.h>
+ 
+ 
+/**
+* Define Functions
+**/
+ RSA* rsa_gen_keypair(int keybit);
+ int rsa_extract_and_store_keypair_into_db(RSA* keypair);
+ char * p2pserver_rsa_buffer_default_public_key();

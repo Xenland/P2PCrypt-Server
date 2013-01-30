@@ -33,3 +33,4 @@
  **/
  int p2pserver_sql_pubkey_exists(gchar *client_public_key_sha256, const guchar * client_public_key);
  int p2pserver_sql_add_client_identity(gchar *client_public_key_sha256, const guchar * client_public_key);
+ int p2pserver_sql_add_relaymsg(gchar *to_pubkey_sha256, gchar *to_message);

@@ -93,6 +93,22 @@ void parse_json_command(char** response, char *json_command){
 							valid_cmd_found = 1;
 						}
 					}
+					
+					
+					//Receive Message Queue | receivemsgq
+					if(valid_cmd_found == 0){
+						cmd_message_comparison = g_strdup_printf("%s", json_string_value(json_string("receivemsgq")));
+						
+						cmd_comparison_bool = g_utf8_collate(cmd_message, cmd_message_comparison);
+						
+						if(cmd_comparison_bool == 0){
+							//We have found the "command" currently being invoked is "relaymsg"
+							p2pserver_json_receivemsgqueue_response(&local_response, json);
+							
+							//Flag we found a valid command
+							valid_cmd_found = 1;
+						}
+					}
 				
 			//No valid "cmd" could be found....
 			if(valid_cmd_found == 0){
@@ -153,20 +169,20 @@ void parse_json_command(char** response, char *json_command){
 			client_public_key_string_sha256 = g_compute_checksum_for_string(G_CHECKSUM_SHA256, client_public_key_string, strlen(client_public_key_string));
 			
 			//SQLite3: Search for the "sha256s" associated public key in the SQLite3 DB and match that found result with its public key (efficent search, less characters to match)
-			int client_public_key_exists = p2pserver_sql_pubkey_exists(client_public_key_string_sha256, client_public_key_string);
+			int client_public_key_exists = p2pserver_sql_client_pubkey_exists(client_public_key_string_sha256, client_public_key_string);
 			
 			//Decision: If no: add it to the DB, if yes, update the current users "status" (Only if the status is signed and valid, of course)
 			if(client_public_key_exists == 1){
 				//TO DO: Update the clients "status" locally to DB
 				
 				//Respond to the client with a return_code of 1001 (identupdate success)
-				local_response = g_strdup_printf("%s", "{\"return_code\":1001\", \"public_key\":\"\"}");
+				local_response = g_strdup_printf("{\"return_code\":1001\", \"public_key\":\"%s\"}", p2pserver_rsa_active_identity);
 				
 			}else if(client_public_key_exists == 0){
 				//This client is new, save it into the database
 				int add_client_locally_success = p2pserver_sql_add_client_identity(client_public_key_string_sha256, client_public_key_string);
 				
-				local_response = g_strdup_printf("%s", "{\"return_code\":1\", \"public_key\":\"node_something_key NEW CLIENT\"}");
+				local_response = g_strdup_printf("{\"return_code\":1002\", \"public_key\":\"%s\"}", p2pserver_rsa_active_identity);
 			}else{
 				//Error status invoked during the search
 				local_response = g_strdup_printf("%s", "{\"return_code\":-1000\"}");
@@ -214,10 +230,108 @@ void parse_json_command(char** response, char *json_command){
 			//SQLite3: Save the message along with the "to_pubkey_sha256" data as well into the database.
 			p2pserver_sql_add_relaymsg(to_pubkey_sha256_string, to_message_string);
 			
-			//Print message for debug
-			g_print("sha256:%s", to_pubkey_sha256_string);
-			g_print("message:%s", to_message_string);
+		//output with reponse
+		*response = local_response;
+		
+		return;
+	}
+	
+	
+	/** ** **
+	 * Receive Message Queue | receivemsgq
+	 * Purpose: A client is requesting messages specifically attributed to the publickey/sha256 digest.
+	 ** ** **/
+	
+	void p2pserver_json_receivemsgqueue_response(char **response, json_t *json){
+		 g_print("EXECUTE RECEIVEMSGQUUE");
+		 
+		//Define local variables
+		int return_code = 0;
+		
+		char * local_response;
+		
+		json_t *json_response;
+		json_t *json_messages_array;
+		 
+		json_t *associated_msg_pubkey_sha256;
+		const guchar * associated_msg_pubkey_sha256_string;
+
+		//Begin local function logic
+			/** General Instruction Description
+			* 	TO DO: Describe what is happening in the logic below in engrish.
+			**/
 			
+			//JSON: Get the sha256 of messages the client is requesting
+			associated_msg_pubkey_sha256 = json_object_get(json, "pubkey_sha256");
+			associated_msg_pubkey_sha256_string = g_strdup_printf("%s", json_string_value(associated_msg_pubkey_sha256));
+
+			//SQLite3 + JSON: Query all messages associated with this sha256 digest and output a json array of all known messages
+			sqlite3 *db;
+			sqlite3_stmt *stmt;
+			int rc;
+			char *errmsg = 0;
+		
+		
+			rc = sqlite3_open("./db/messages", &db);
+	
+			//Was the DB file successfully opened?
+			if(rc){
+				//Failed to open DB
+				return_code = -1;
+				
+			}else{
+				const char * specific_messages_sql;
+					
+				specific_messages_sql = g_strdup_printf("SELECT `to_message` FROM `txt_messages_stored` WHERE `to_pubkey_sha256` = '%s';", associated_msg_pubkey_sha256_string);
+				g_print("sql:%s\n", specific_messages_sql);
+				
+				rc = sqlite3_prepare_v2(db, specific_messages_sql, -1, &stmt, 0);
+				
+				if(rc){
+					//Failed to open DB
+					return_code = -1;
+				}
+				
+				//Just get the one row requested from the DB
+				if(return_code == 0){
+					//Initialize JSON response
+					json_response = json_object();
+					
+						//Append return_status code
+						json_t *json_return_code;
+						json_return_code = json_integer((json_int_t) 2000);
+					
+						json_object_set(json_response, "return_code", json_return_code);
+						
+						
+						//Initialize array to contain all the messages
+						json_messages_array = json_array();
+						
+						//Populate the array with messages
+						while(sqlite3_step(stmt) == SQLITE_ROW){
+							//Extract message from SQLite3 DB
+							const unsigned char * tmp_message;
+							tmp_message = sqlite3_column_text(stmt, 0);
+							
+							//Append message to the array
+							json_array_append(json_messages_array, json_string((const char *)tmp_message));
+						}
+						
+						//Append populated array to the json object
+						json_object_set(json_response, "messages", json_messages_array);
+						
+						g_print("OUTPUT JSON\n\n%s", json_dumps(json_response, JSON_COMPACT));
+						//TO DO: Append to json object the total number of messages sent (in encrypted form)
+						
+				}
+				
+				sqlite3_finalize(stmt);
+				
+				sqlite3_close(db);
+			}
+	
+			
+			local_response = g_strdup_printf("%s", "receieve message success");
 			
 		//output with reponse
 		*response = local_response;

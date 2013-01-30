@@ -40,21 +40,28 @@
 
 ** ** **/
 
+
 // Load linkage file
 #include "linkage.h"
 
+
+
 int main(int argc, char *argv[]){
 	
-/**
- * 		Begin P2P Server Logic
- **/	
+
+	/**
+	 * Begin P2P Server Logic
+	 **/	
 	//Initialize gtk
 	gtk_init(NULL, NULL);
 	
 	//Initialize GLib
 	g_type_init();
 	
-	
+	//Load default server public key
+	p2pserver_rsa_active_identity = p2pserver_rsa_buffer_default_public_key();
+
+
 	//debug msg
 	debug_console_message("Initailized");
 	debug_console_message("Booting up!");

@@ -29,7 +29,9 @@
 #include <sqlite3.h>
 
 #include <jansson.h>
-	
+
+
+
 /**
  * Define Global Variables
  **/
@@ -46,3 +48,4 @@
  **/
  void p2pserver_json_identupdate_response(char **response, json_t *json);
  void p2pserver_json_relaymsg_response(char **response, json_t *json);
+ void p2pserver_json_receivemsgqueue_response(char **response, json_t *json);

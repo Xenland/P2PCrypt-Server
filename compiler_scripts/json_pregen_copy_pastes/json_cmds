@@ -12,6 +12,8 @@ Identity Update | identupdate
 		{"cmd":"identupdate", "public_key":"sGuLWerX"}
 	
 	SERVER RESPONSE
+		If the client is new to the node in particular it will add the client to the local servers database
+		if the client is not new it will update the clients incomming status.
 		
 ====================================================================================================================================
 Relay Message | relaymsg
@@ -30,6 +32,16 @@ Relay Message | relaymsg
 
 	CLIENT MESSAGE
 		{"cmd":"relaymsg", "to_pubkey_sha256":"SHA256 DIGEST OUTPUT", "to_message":"some base64 encoded encrypted message here"}
+		
+	SERVER RESPONSE
+		
+====================================================================================================================================
+Receive Message Queue | receivemsgq
+	cmd: receivemsgq
+		Queries the server for any messages attributed to the requested sha256	
+
+	CLIENT MESSAGE
+		{"cmd":"receivemsgq", "pubkey_sha256":"SHA256 DIGEST OUTPUT"}
 		
 	SERVER RESPONSE
 		

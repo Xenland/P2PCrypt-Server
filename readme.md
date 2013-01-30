@@ -4,7 +4,7 @@ P2P Crypt (Server)
 ##Oragnization Details
 
 _Also known as_ 
-**Peer 2 Peer Encryption Communications** 
+**Peer 2 Peer Encrypted Communications** 
 _or for short_ 
 **P2P Crypt Comm** 
 _to specifically refer to the server but we just like to call it the_ 
@@ -58,9 +58,15 @@ real-time streams and protect the integrity of everyone’s public-key.
 	With enough P2P servers online and more linking into the network everyday; It becomes increasingly harder to analyze the complexity of __who trusts who__ and thus it is
 	believed that any attacker will need to spend more on resources for analyzing than they could be attacking; Making the network a low risk target. 
   
-* ###Easy Multimedia support
+* ###Easy Multimedia support (Not implemented as of this writing)
 
 	With internet speeds blazing past faster than we can consume, multimedia support is becoming a necessity 
 	as communication becomes more and more time consuming to take the time to "type out a 10 page report", 
 	which could have in retrospect taken 3 minutes to send an encrypted audio/video packet that could be 
 	in more cases descriptive and efficient than the former solution of text messages.
+	
+* ###Anti-Dos/DDoS Measures (Not implemented as of this writing)
+
+	To prevent spam and Dos/DDoS attacks the p2pservers require all messages to be hashed to a certain target in such a
+	way that is time consuming and costly in terms of proccessing power to generate a valid hash but is fast to verify
+	the hash is valid, think of hashcash or _Bitcoin Mining_.
