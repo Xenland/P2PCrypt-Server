@@ -28,7 +28,8 @@ _Shane B._
 [Gnome](http://gnome.org)  
 [Open SSL] (http://openssl.org)  
 [Jansson](http://www.digip.org/jansson/)  
-[LIBEVENT](http://libevent.org)
+[LIBEVENT](http://libevent.org)  
+[SQLite3](http://sqlite.com)
 
 
 
@@ -38,14 +39,28 @@ The servers' purpose of the __network__ is to stay consistently online, to relay
 real-time streams and protect the integrity of everyone’s public-key.
 
 ## List of features
-
+* ###Hand-stiched with passion
+	
+	This server node has been hand coded with nothing but a color coded text editor (with some tabbing features) and some very helpfull libraries,
+	we chose not to use an advanced gui systems that would do the coding for us so _we_ the coders' and _the people_ could have maximum control over what goes on
+	in our applications which leads to greater security and a smaller attack surface for intruders.  
+  
+	_P2PCrypt_ organization is based on volunteers, contributions and helpful resources in hopes to give back to the community. With each person dedicated
+	not to expect to gain a profit but to gain privacy, security and _peace of mind_ from abusive authority figures of all colours.
+  	
 * ###JSON Communication
 
 	Almost any device can read/write in JSON so this was the obvious choice for allowing maximum device flexability to have the server communicate to other requesting networking streams .
-
+  
 * ###No single point of failure
 
 	The source-code is freely available to edit,sell,change and distribute under the X11/MIT license(this applies to only the server code not the client code).
 	With enough P2P servers online and more linking into the network everyday; It becomes increasingly harder to analyze the complexity of __who trusts who__ and thus it is
 	believed that any attacker will need to spend more on resources for analyzing than they could be attacking; Making the network a low risk target. 
+  
+* ###Easy Multimedia support
 
+	With internet speeds blazing past faster than we can consume, multimedia support is becoming a necessity 
+	as communication becomes more and more time consuming to take the time to "type out a 10 page report", 
+	which could have in retrospect taken 3 minutes to send an encrypted audio/video packet that could be 
+	in more cases descriptive and efficient than the former solution of text messages.

@@ -45,3 +45,4 @@
  * RPC Command Responses
  **/
  void p2pserver_json_identupdate_response(char **response, json_t *json);
+ void p2pserver_json_relaymsg_response(char **response, json_t *json);

@@ -31,7 +31,9 @@ void parse_json_command(char** response, char *json_command){
 	//Define Local Variables
 	char * local_response;
 	
+	const char * cmd_message_comparison;
 	int valid_cmd_found = 0;
+	int cmd_comparison_bool = 0;
 	int json_valid = 0; //0 = Invalid; 1 = Valid json;
 	json_t *json;
 	json_error_t error;
@@ -54,32 +56,50 @@ void parse_json_command(char** response, char *json_command){
 		
 		if(json_valid == 1){
 			//Json is valid, continue with the parsing...
-				//Check what command has been called.
+				//Init handle for cmd value
 				client_command_called = json_object_get(json, "cmd");
 				
-				const char * cmd_message;
-				cmd_message = g_strdup_printf("%s", json_string_value(client_command_called));
+					//Define value of cmd
+					const char * cmd_message;
+					cmd_message = g_strdup_printf("%s", json_string_value(client_command_called));
 				
-				//Make sure the "cmd" key was called
-				const char * cmd_message_comparison;
-				cmd_message_comparison = g_strdup_printf("%s", json_string_value(json_string("identupdate")));
-				g_print("\n%s\n%s\n", cmd_message, cmd_message_comparison);
-				
-				int cmd_comparison_bool = g_utf8_collate(cmd_message, cmd_message_comparison);
 
-				if(cmd_comparison_bool == 0){
-					//We have found the "command" currently being invoked is "identityupdate" aka "identupdate"
-					p2pserver_json_identupdate_response(&local_response, json);
-
-					//Flag we found a valid command
-					valid_cmd_found = 1;
-				}
+				//What command was called?
+					//Identity Update? | identupdate
+					cmd_message_comparison = g_strdup_printf("%s", json_string_value(json_string("identupdate")));
 				
-				if(valid_cmd_found == 0){
-					//We can't seem to find a "cmd", return command not recognized
-					local_response = g_strdup_printf("%s", "{\"response\":\"Command Not Recognized\", \"return_code\":100\"}");
+					cmd_comparison_bool = g_utf8_collate(cmd_message, cmd_message_comparison);
 					
-				}
+					if(cmd_comparison_bool == 0){
+						//We have found the "command" currently being invoked is "identityupdate" aka "identupdate"
+						p2pserver_json_identupdate_response(&local_response, json);
+
+						//Flag we found a valid command
+						valid_cmd_found = 1;
+					}
+					
+					
+					//Relay Message | relaymsg
+					if(valid_cmd_found == 0){
+						cmd_message_comparison = g_strdup_printf("%s", json_string_value(json_string("relaymsg")));
+						
+						cmd_comparison_bool = g_utf8_collate(cmd_message, cmd_message_comparison);
+						
+						if(cmd_comparison_bool == 0){
+							//We have found the "command" currently being invoked is "relaymsg"
+							p2pserver_json_relaymsg_response(&local_response, json);
+							
+							//Flag we found a valid command
+							valid_cmd_found = 1;
+						}
+					}
+				
+			//No valid "cmd" could be found....
+			if(valid_cmd_found == 0){
+				//We can't seem to find a "cmd", return command not recognized
+				local_response = g_strdup_printf("%s", "{\"response\":\"Command Not Recognized\", \"return_code\":100\"}");
+				
+			}
 				
 		}else if(json_valid == 0){
 			//Json is INVALID, response with the approriate response
@@ -102,7 +122,7 @@ void parse_json_command(char** response, char *json_command){
 
 
 	/** ** **
-	 * Identity Update
+	 * Identity Update | identupdate
 	 * Purpose: "Initailizing connections, or if connection is not-new than updating online status of the client"
 	 ** ** **/
 	 
@@ -158,3 +178,49 @@ void parse_json_command(char** response, char *json_command){
 		 
 		 return;
 	 }
+
+
+
+	/** ** **
+	 * Relay Message | relaymsg
+	 * Purpose: "When a message is recieved from a relaymsg command this message is saved to the database locally,
+	 * 			until another client asks for its "messages".
+	 ** ** **/
+	
+	void p2pserver_json_relaymsg_response(char **response, json_t *json){
+		 
+		//Define local variables
+		char * local_response;
+		 
+		json_t *to_pubkey_sha256;
+		const guchar * to_pubkey_sha256_string;
+		
+		json_t *to_message;
+		const guchar * to_message_string;
+		
+		//Begin local function logic
+			/** General Instruction Description
+			* 	TO DO: Describe what is happening in the logic below in engrish.
+			**/
+			
+			//JSON: Get the sha256 of the receipts publickey
+			to_pubkey_sha256 = json_object_get(json, "to_pubkey_sha256");
+			to_pubkey_sha256_string = g_strdup_printf("%s", json_string_value(to_pubkey_sha256));
+			
+			//JSON: Get the message to be relayed
+			to_message = json_object_get(json, "to_message");
+			to_message_string = g_strdup_printf("%s", json_string_value(to_message));
+			
+			//SQLite3: Save the message along with the "to_pubkey_sha256" data as well into the database.
+			p2pserver_sql_add_relaymsg(to_pubkey_sha256_string, to_message_string);
+			
+			//Print message for debug
+			g_print("sha256:%s", to_pubkey_sha256_string);
+			g_print("message:%s", to_message_string);
+			
+			
+		//output with reponse
+		*response = local_response;
+		
+		return;
+	}

@@ -21,6 +21,8 @@
 		THE SOFTWARE.
 ** ** **/
 
+
+//Define functions
 int p2pserver_sql_pubkey_exists(gchar *client_public_key_sha256, const guchar * client_public_key){
 	
 	/**
@@ -124,24 +126,86 @@ int p2pserver_sql_add_client_identity(gchar *client_public_key_sha256, const guc
 			//Open database file
 			rc = sqlite3_open("./db/client_list", &db);
 			if(rc){
-				printf("Can't open database: %s\n", sqlite3_errmsg(db));
-				sqlite3_close(db);
+				g_print("Can't open database: %s\n", sqlite3_errmsg(db));
+				
+				return_code = -1;
 			}
 			
-			//Insert into database
-			const char * insert_client_pubkey_sql;
-			insert_client_pubkey_sql = g_strdup_printf("INSERT INTO `clients` (`publickey`, `publickey_sha256`) VALUES('%s','%s');", client_public_key ,client_public_key_sha256);
+			if(return_code == 0){
+				//Insert into database
+				const char * insert_client_pubkey_sql;
+				insert_client_pubkey_sql = g_strdup_printf("INSERT INTO `clients` (`publickey`, `publickey_sha256`) VALUES('%s','%s');", client_public_key ,client_public_key_sha256);
 
-			rc = sqlite3_exec(db, insert_client_pubkey_sql, 0, 0, &zErrMsg);
-			
-			if(rc != SQLITE_OK){
-				return_code = -2;
-			}else if(rc == SQLITE_OK){
-				return_code = 1;
+				rc = sqlite3_exec(db, insert_client_pubkey_sql, 0, 0, &zErrMsg);
+				
+				if(rc != SQLITE_OK){
+					return_code = -2;
+				}else if(rc == SQLITE_OK){
+					return_code = 1;
+				}
 			}
 			
-	g_print("INSERT CODE: %d", return_code);
+			g_print("INSERT CODE: %d\n", return_code);
 	
+		//Close DB connection
+		sqlite3_close(db);
+		
+	return return_code;
+}
+
+
+
+int p2pserver_sql_add_relaymsg(gchar *to_pubkey_sha256, gchar *to_message){
+	
+		/**
+		* 	Response Codes
+		* 
+		*  Successfully Executed Fully
+		*  1 = Public key exists in database (And sha256 matches the publickey)
+		*  0 = Public key dosen't exist
+		* 
+		*  Errors
+		* -1 = failed to open/connect to DB
+		* -2 = Error happened while query/searching for match
+		**/
+
+
+		//Define local variables
+		int return_code = 0;
+		
+		sqlite3 *db;
+		char *zErrMsg = 0;
+		int rc;
+		
+		
+		
+		//Begin local logic
+		
+			//Open database file
+			rc = sqlite3_open("./db/messages", &db);
+			if(rc){
+				g_print("Can't open database: %s\n", sqlite3_errmsg(db));
+				
+				return_code = -1;
+			}
+			
+			if(return_code == 0){
+				//Insert into database
+				const char * insert_txt_message;
+				insert_txt_message = g_strdup_printf("INSERT INTO `txt_messages_stored` (`to_pubkey_sha256`, `to_message`) VALUES('%s','%s');", to_pubkey_sha256 ,to_message);
+
+				rc = sqlite3_exec(db, insert_txt_message, 0, 0, &zErrMsg);
+				
+				if(rc != SQLITE_OK){
+					return_code = -2;
+				}else if(rc == SQLITE_OK){
+					return_code = 1;
+				}
+			}
+			
+			g_print("INSERT MSG CODE: %d\n", return_code);
+	
+		//Close DB connection
 		sqlite3_close(db);
 		
 	return return_code;

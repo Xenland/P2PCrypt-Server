@@ -1,0 +1,36 @@
+JSON PRE GENERATED COMMANDS
+
+All json keys should be lower case to increase simplicity
+
+====================================================================================================================================
+Identity Update | identupdate
+	cmd: identupdate
+		Tells the server we want to connect for the first time and or update our client status
+	
+	
+	CLIENT MESSAGE
+		{"cmd":"identupdate", "public_key":"sGuLWerX"}
+	
+	SERVER RESPONSE
+		
+====================================================================================================================================
+Relay Message | relaymsg
+	cmd: relaymsg
+		Tells the server what command the client has sent to the server.
+		
+	to_pubkey_sha256: sha256 digest out put of the "receiver"
+		This will allows a few uses:
+			*Clients can specifically request data targeted for them. (Which makes efficient sending,searching,etc)
+			*Quick searching (Compared to comparing pubkeys which are long, which is more CPU cycles for matchin)
+			*Less bandwidth usage to send a sha256 than it is to send an entire publick key everytime
+			*Hard to tell from an observers to which person you are sending to unless the observer already has the publickey.
+			
+	to_message: The encrypted message in base64encoding form.
+	
+
+	CLIENT MESSAGE
+		{"cmd":"relaymsg", "to_pubkey_sha256":"SHA256 DIGEST OUTPUT", "to_message":"some base64 encoded encrypted message here"}
+		
+	SERVER RESPONSE
+		
+====================================================================================================================================
