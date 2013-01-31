@@ -55,7 +55,7 @@
 	
 	//Socket Server
 		//Basic vars
-			int p2pserver_network_port = 8014; //Default is 8080
+			int p2pserver_network_port = 8016; //Default is 8080
 			int p2pserver_network_total_active_connections = 200;
 			int debug = 0;
 		

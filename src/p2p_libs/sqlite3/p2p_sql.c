@@ -1,4 +1,4 @@
- /** ** **
+/** ** **
 				Copyright (c) 2013 "Shane B. and Contributors"
 				Representative: www.P2PCrypt.com
 

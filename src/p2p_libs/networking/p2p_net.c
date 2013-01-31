@@ -163,7 +163,7 @@ void p2pserver_network_buf_read_callback(struct bufferevent *incoming, void *arg
 	
 	char * response;
 	parse_json_command(&response, req);
-
+	g_print("response: %s\n", response);
 	evreturn = evbuffer_new();
 	evbuffer_add_printf(evreturn, "%s", response);
 	

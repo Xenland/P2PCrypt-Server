@@ -320,9 +320,14 @@ void parse_json_command(char** response, char *json_command){
 						//Append populated array to the json object
 						json_object_set(json_response, "messages", json_messages_array);
 						
-						g_print("OUTPUT JSON\n\n%s", json_dumps(json_response, JSON_COMPACT));
+					
 						//TO DO: Append to json object the total number of messages sent (in encrypted form)
 						
+						
+						local_response = g_strdup_printf("%s", json_dumps(json_response, JSON_COMPACT));
+						
+						//Flag success
+						return_code = 1;
 				}
 				
 				sqlite3_finalize(stmt);
@@ -330,8 +335,6 @@ void parse_json_command(char** response, char *json_command){
 				sqlite3_close(db);
 			}
 	
-			
-			local_response = g_strdup_printf("%s", "receieve message success");
 			
 		//output with reponse
 		*response = local_response;
