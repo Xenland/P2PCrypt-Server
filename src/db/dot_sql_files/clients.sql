@@ -1,0 +1,1 @@
+SELECT `id`, `server_ip4_address` FROM `server_nodes` WHERE `public_key` != '';

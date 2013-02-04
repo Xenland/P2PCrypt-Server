@@ -176,18 +176,18 @@ void parse_json_command(char** response, char *json_command){
 				//TO DO: Update the clients "status" locally to DB
 				
 				//Respond to the client with a return_code of 1001 (identupdate success)
-				local_response = g_strdup_printf("{\"return_code\":1001\", \"public_key\":\"%s\"}", p2pserver_rsa_active_identity);
+				local_response = g_strdup_printf("{\"return_code\":1001, \"public_key\":\"%s\"}\n", p2pserver_rsa_active_identity);
 				
 			}else if(client_public_key_exists == 0){
 				//This client is new, save it into the database
 				int add_client_locally_success = p2pserver_sql_add_client_identity(client_public_key_string_sha256, client_public_key_string);
 				
-				local_response = g_strdup_printf("{\"return_code\":1002\", \"public_key\":\"%s\"}", p2pserver_rsa_active_identity);
+				local_response = g_strdup_printf("{\"return_code\":1002, \"public_key\":\"%s\"}\n", p2pserver_rsa_active_identity);
 			}else{
 				//Error status invoked during the search
-				local_response = g_strdup_printf("%s", "{\"return_code\":-1000\"}");
+				local_response = g_strdup_printf("{\"return_code\":-1000}\n");
 			}
-
+			g_print("%s\n", local_response);
 
 		 //output with response
 		 *response = local_response;
@@ -322,7 +322,6 @@ void parse_json_command(char** response, char *json_command){
 						
 					
 						//TO DO: Append to json object the total number of messages sent (in encrypted form)
-						
 						
 						local_response = g_strdup_printf("%s", json_dumps(json_response, JSON_COMPACT));
 						
